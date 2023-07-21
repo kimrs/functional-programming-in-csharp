@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using static Functional_Programming_in_CSharp._2_Higher_order_functions.Extensions;
+using static Functional_Programming_in_CSharp._2_higher_order_functions.Extensions;
 using static System.Linq.Enumerable; 
 
-namespace Functional_Programming_in_CSharp._2_Higher_order_functions;
+namespace Functional_Programming_in_CSharp._2_higher_order_functions;
 
 public static class Extensions
 {

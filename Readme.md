@@ -53,11 +53,44 @@ Returning a tuple can instead usually avoid this.
 ### 3.2 Enabling parallelization by avoiding state mutation
 `Select` should always be called with pure functions
 If we decide to perform it in parallel, internal state will not be as expected because the list will
-be chuncked before processed
-We have to decide wether to run it in parallel, the runtime does not know wheter the function is pure or not
-We could parallelize the impure function by using a lock, but that comes at the expence of performance
+be chuncked before processed.
+We have to decide wether to run it in parallel, the runtime does not know wheter the function is pure or not.
+We could parallelize the impure function by using a lock, but that comes at the expence of performance.
 Note that static methods can cause problems if they mutate static fields or perform I/O operations. In the latter case
 it is testability that's jepordized
+
+Parallel execution will not work for for this formatter because counter is accessed by multiple instances
+
+```csharp
+class ImpureListFormatter
+{
+    private int counter;
+    
+    string PrependCounter(string s) => $"{++counter}. {s}";
+
+    public List<string> Format(List<string> list)
+        => list
+            .AsParallel()
+            .Select(Extensions.ToSentenceCase)
+            .Select(PrependCounter)
+            .ToList();
+}
+```
+[snippet source]
+
+But it will work for this pure formatter
+
+```csharp
+public static class PureListFormatter
+{
+    public static List<string> Format(List<string> list)
+        => list
+            .Select(Extensions.ToSentenceCase)
+            .Zip(Range(1, list.Count), (s, i) => $"{i}. {s}")
+            .ToList();
+}
+```
+[snippet source]
 
 
 
