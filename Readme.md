@@ -76,7 +76,7 @@ class ImpureListFormatter
             .ToList();
 }
 ```
-[snippet source]
+[snippet source](https://github.com/kimrs/functional-programming-in-csharp/blob/8aa650dbf0d580d51c0bbaa50eb65de369345be2/Functional%20Programming%20in%20CSharp/3-why-function-purity-matters.cs#L23-L35)
 
 But it will work for this pure formatter
 
@@ -90,7 +90,7 @@ public static class PureListFormatter
             .ToList();
 }
 ```
-[snippet source]
+[snippet source](https://github.com/kimrs/functional-programming-in-csharp/blob/8aa650dbf0d580d51c0bbaa50eb65de369345be2/Functional%20Programming%20in%20CSharp/3-why-function-purity-matters.cs#L37-L44)
 
 
 
