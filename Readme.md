@@ -123,12 +123,84 @@ public delegate DateTime Clock();
 services.AddTransient<Clock>(_ => () => DateTime.UtcNow.Date));
 services.AddTransient<DateNotPastValidator>();
 ```
+# Part 2
+# 4. Designing function signatures and types
+*Arrow notation*: Standard notation for function signatures in the FP community
 
+| Function signature  | C# type               | Example                              |
+|---------------------|-----------------------|--------------------------------------|
+| `int -> string`     | `Func<int, string>`   | `(int i) => i.ToString()`            | 
+| `() -> string`      | `Func<string>`        | `() => "hello"`                      | 
+| `int -> ()`         | `Action<int>`         | `(int i) => WriteLine($"gimme {i})"` | 
+| `() -> ()`          | `Action`              | `() => WriteLine("Hello")`           | 
+| `(int, int) -> int` | `Func<int, int, int>` | `(int a, int b) => a + b`            | 
 
+Higher order functions can also be notated.
 
+```csharp
+static R Connect<R>(string connStr, Func<IDbConnection, R> func)
+ => ...
+```
 
+can be notated as
 
+```csharp
+(string, (IDbConnection -> R)) -> R
+```
 
+which in C# corresponds to
+
+```csharp
+Func<string, Func<IDbConnection, R>, R>
+```
+
+*Honest functions*: Always honors its signature.
+I.E no exceptions if validation fails.
+And no null values!
+We can achieve this with value objects
+
+*Product types*: Types that are defined by aggregating other types.
+*Sum types*: Types where the possible values are the sum of one or more other types
+
+Model your data objects in a way that gives you fine control over the range of inputs
+that your function will need to handle
+
+# 4.3 Modeling the absence of data with Unit
+*Unit*: A type that we can use to represent the absence of data without the problems of void
+Expressed as an empty tuple
+
+If you write a function that takes a `Func<T>` as argument, and does not use its return value
+You would have to write an overload for it if you want to pass a void.
+
+* ***void***: Represents no value
+* ***unit***: Represents one value
+
+Unit should be used as a flexible alternative to void
+We can use an adapter function to change the type.
+
+```csharp
+    public static Func<Unit> ToFunc(this Action action)
+        => () => { action(); return default; };
+```
+[snippet source]()
+
+```csharp
+public static class Instrumentation
+{
+    public static void Time(string op, Action action)
+        => Time(op, action.ToFunc());
+    public static T Time<T>(string op, Func<T> f)
+    {
+        var sw = new Stopwatch();
+        sw.Start();
+        var t = f();
+        sw.Stop();
+        Console.WriteLine($"{op} took {sw.ElapsedMilliseconds}ms");
+        return t;
+    }
+}
+```
+[snippet source]()
 
 
 
