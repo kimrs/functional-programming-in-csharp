@@ -182,7 +182,7 @@ We can use an adapter function to change the type.
     public static Func<Unit> ToFunc(this Action action)
         => () => { action(); return default; };
 ```
-[snippet source]()
+[snippet source](https://github.com/kimrs/functional-programming-in-csharp/blob/12c6e223a6a0d9e7c2e0201795ccbbcea566c219/Functional%20Programming%20in%20CSharp/4-designing-function-signatures-and-types.cs#L19-L20)
 
 ```csharp
 public static class Instrumentation
@@ -200,7 +200,7 @@ public static class Instrumentation
     }
 }
 ```
-[snippet source]()
+[snippet source](https://github.com/kimrs/functional-programming-in-csharp/blob/12c6e223a6a0d9e7c2e0201795ccbbcea566c219/Functional%20Programming%20in%20CSharp/4-designing-function-signatures-and-types.cs#L23C36-L36)
 
 
 
