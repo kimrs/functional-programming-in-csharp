@@ -26,17 +26,19 @@ Functions can be represented with:
 ## Higher order functions
 Functions that take other functions as input or/and return a function as output. Compare and Where are examples of higher order functions.
 Can be usefull for deciding how to get date in case of a cache miss.
-Adapter function: Returns a modified function. For example with the arguments swaped. Se 2.2.2 Adapter function
-Function factories: Takes some static data and returns a function. See 2.2.3 Function factory
+* *Adapter function*: Returns a modified function. For example with the arguments swaped.
+[See 2.2.2](https://github.com/kimrs/functional-programming-in-csharp/blob/c62d378ace864adbe1f1e75a6095e52a1279753b/Functional%20Programming%20in%20CSharp/2-higher-order-functions.cs#L24-L33)
+* *Function factories*: Takes some static data and returns a function.
+[See 2.2.3](https://github.com/kimrs/functional-programming-in-csharp/blob/c62d378ace864adbe1f1e75a6095e52a1279753b/Functional%20Programming%20in%20CSharp/2-higher-order-functions.cs#L35-L43)
 
 ### 3. Why function purity matters
-*Pure functions*: Output depends entierly on the input arguments and have no side effects
-*Impure functions*: Factors other than input arguments can affect the output and can have side effects
+* *Pure functions*: Output depends entierly on the input arguments and have no side effects
+* *Impure functions*: Factors other than input arguments can affect the output and can have side effects
 
 A function has side effects if it:
- * *Mutates global state*: Anything outside of function scope. For example private instance fields
+ * Mutates global state, I.E Anything outside of function scope. For example private instance fields
  * Mutates its input arguments 
- * *Throws exceptions*: It differs depending on whether the function is called in a try-catch
+ * Throws exceptions. Because it differs depending on whether the function is called in a try-catch
  * Performs I/O operations
 
 Benefits of pure functions are:
@@ -154,18 +156,18 @@ which in C# corresponds to
 Func<string, Func<IDbConnection, R>, R>
 ```
 
-*Honest functions*: Always honors its signature.
+* *Honest functions*: Always honors its signature.
 I.E no exceptions if validation fails.
 And no null values!
 We can achieve this with value objects
 
-*Product types*: Types that are defined by aggregating other types.
-*Sum types*: Types where the possible values are the sum of one or more other types
+* *Product types*: Types that are defined by aggregating other types.
+* *Sum types*: Types where the possible values are the sum of one or more other types
 
 Model your data objects in a way that gives you fine control over the range of inputs
 that your function will need to handle
 
-# 4.3 Modeling the absence of data with Unit
+## 4.3 Modeling the absence of data with Unit
 *Unit*: A type that we can use to represent the absence of data without the problems of void
 Expressed as an empty tuple
 
@@ -189,6 +191,7 @@ public static class Instrumentation
 {
     public static void Time(string op, Action action)
         => Time(op, action.ToFunc());
+
     public static T Time<T>(string op, Func<T> f)
     {
         var sw = new Stopwatch();
@@ -203,5 +206,17 @@ public static class Instrumentation
 [snippet source](https://github.com/kimrs/functional-programming-in-csharp/blob/12c6e223a6a0d9e7c2e0201795ccbbcea566c219/Functional%20Programming%20in%20CSharp/4-designing-function-signatures-and-types.cs#L23C36-L36)
 
 
+# 5. Modeling the possible absence of data
+In C#, whether a function returns null or throws an exception if an illegal argument is used is implementation specific.
+We can't know what it does without knowing implementation details. In FP, we combat this by using the Option type.
+The option is a container that either wraps a value or no value.
+
+```
+option<T> = None | Some
+```
+
+For nicer syntax, it is adviced to write a match function for defining paths to execute depending on whether we are dealing with a
+Some or a None.
+```
 
 

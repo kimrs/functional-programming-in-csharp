@@ -24,6 +24,7 @@ public static class Instrumentation
 {
     public static void Time(string op, Action action)
         => Time(op, action.ToFunc());
+
     public static T Time<T>(string op, Func<T> f)
     {
         var sw = new Stopwatch();
