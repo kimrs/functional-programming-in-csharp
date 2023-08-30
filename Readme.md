@@ -227,7 +227,7 @@ public static R Match<T, R>(this Option<T> opt, Func<R> None, Func<T, R> Some)
 		_ => throw new ArgumentException("Option must be None or Some")
 	};
 ```
-[snippet source]()
+[snippet source](https://github.com/kimrs/functional-programming-in-csharp/blob/1a9f66caba7c37adc729e96c150200101cf06eb6/Functional%20Programming%20in%20CSharp/5-modeling-the-possible-absence-of-data.cs#L10-L17)
 
 That way we can easily define paths for both the cases where we have a value and cases where we do not.
 
@@ -238,7 +238,7 @@ private static string Greet(Option<string> greetee)
 		name => $"Hello, {name}"
 	);
 ```
-[snippet source]()
+[snippet source](https://github.com/kimrs/functional-programming-in-csharp/blob/1a9f66caba7c37adc729e96c150200101cf06eb6/Functional%20Programming%20in%20CSharp/5-modeling-the-possible-absence-of-data.cs#L104-L108)
 
 Because Option is a concept, and not an implementation we are free to implement it however we want.
 The simplest way would be having an interface with implementations for `Some` and `None` but there are many
@@ -266,7 +266,7 @@ public static Option<int> Parse(string s)
 		? Some(result)
 		: None;
 ```
-[snippet source]()
+[snippet source](https://github.com/kimrs/functional-programming-in-csharp/blob/1a9f66caba7c37adc729e96c150200101cf06eb6/Functional%20Programming%20in%20CSharp/5-modeling-the-possible-absence-of-data.cs#L54-L57)
 
 Value retrieval in C# is inconsistent, dishonest and partial. To fix this we can use adapter functions. 
 
@@ -277,7 +277,7 @@ public static Option<string> Lookup(this NameValueCollection collection, string 
 public static Option<T> Lookup<K, T>(this IDictionary<K, T> dictionary, K key)
     => dictionary.TryGetValue(key, out T value) ? Some(value) : None;
 ```
-[snippet source]()
+[snippet source](https://github.com/kimrs/functional-programming-in-csharp/blob/1a9f66caba7c37adc729e96c150200101cf06eb6/Functional%20Programming%20in%20CSharp/5-modeling-the-possible-absence-of-data.cs#L62-L66)
 
 
 The smart constructor pattern is when you make the constructor of a value object private and instead have a create method that returns an IOption
