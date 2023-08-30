@@ -217,6 +217,92 @@ option<T> = None | Some
 
 For nicer syntax, it is adviced to write a match function for defining paths to execute depending on whether we are dealing with a
 Some or a None.
+
+```csharp
+public static R Match<T, R>(this Option<T> opt, Func<R> None, Func<T, R> Some)
+	=> opt switch
+	{
+		None<T> => None(),
+		Some<T>(var t) => Some(t),
+		_ => throw new ArgumentException("Option must be None or Some")
+	};
 ```
+[snippet source]()
+
+That way we can easily define paths for both the cases where we have a value and cases where we do not.
+
+```csharp
+private static string Greet(Option<string> greetee)
+	=> greetee.Match(
+		() => "Sorry, who?",
+		name => $"Hello, {name}"
+	);
+```
+[snippet source]()
+
+Because Option is a concept, and not an implementation we are free to implement it however we want.
+The simplest way would be having an interface with implementations for `Some` and `None` but there are many
+things we can do to improve it.
+* Using struct for stack allocation and None instead of null as default
+* Implementing Deconstruct for easier matching
+* Creating convenience methods for Some and None for simpler use
+* Implicit operators
+
+## 5.4 Option as the natural result type of partial functions
+* *Total functions*: Mappings defined for every element of the domain
+* *Partial functions*: Mappings defined for some but not all elements of the domain
+
+A `string -> int` parsing function is partial
+because there are infinitely many strings that cannot be parsed to an int.
+Partial functions are problematic because it is not clear what a function should do
+when given an input for which it can't compute a result. 
+Defining it as `string -> Option<int>` however makes it total, because
+whichever string we insert will always return a valid Option.
+Here is an example of how it can be built.
+
+```csharp
+public static Option<int> Parse(string s)
+	=> int.TryParse(s, out var result)
+		? Some(result)
+		: None;
+```
+[snippet source]()
+
+Value retrieval in C# is inconsistent, dishonest and partial. To fix this we can use adapter functions. 
+
+```csharp
+public static Option<string> Lookup(this NameValueCollection collection, string key)
+    => collection[key]; // works because of implicit operator
+
+public static Option<T> Lookup<K, T>(this IDictionary<K, T> dictionary, K key)
+    => dictionary.TryGetValue(key, out T value) ? Some(value) : None;
+```
+[snippet source]()
+
+
+The smart constructor pattern is when you make the constructor of a value object private and instead have a create method that returns an IOption
+
+## 5.5 Dealing with null
+The author claims that using Option clearly convey that the data might not be there.
+He gives an example where the name of a user is made optional. And instead of having this represented
+with null, it is represented with a None. I agree that it forces the developer to take absence into account.
+But will this not make the next developer wonder why it is None? Also, I do not see how
+None is less ambiguous than null. 
+
+* Enable NRT
+* For optionals use Option<T>
+* Prevent null from seeping in to the boundaries of your api
+  * Throw ArgumentNullException
+  * 400 error
+  * Convert null to Option
+
+Note to self: Maybe instead of throwing the exception, we should store it in the none. As a because?
+
+# 6 Patterns in functional programming
+*Map*: Applies a function to the inner values of a structure. 
+
+
+
+
 
 
