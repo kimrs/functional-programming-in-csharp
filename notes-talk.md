@@ -1,0 +1,5 @@
+URL: https://www.reddit.com/r/dotnet/comments/16fu7o0/comment/k03ys7a/?utm_source=share&utm_medium=ios_app&utm_name=iossmf&context=3
+
+There's a lot of legacy thinking around C# and .NET. This is in both the .NET dev community (the available resources to hire) and folks who encountered .NET Framework at some point in their career (and are now engineering managers/decision makers). I spoke with one engineering manager who was considering Rust or Go for their re-write target as they moved parts of their system off of Node. It struck me as odd given that C# is a natural extension from TypeScript given it's converging object-functional hybrid nature. But many .NET devs haven't embraced that shift and many folks who may have in the past touched .NET Framework aren't aware of the shift to open source and the object-functional creep from F#.
+
+Burde vi tvinge oss til å ta i bruk funksjonell c# for å unngå at språket dør?
