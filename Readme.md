@@ -301,6 +301,202 @@ Note to self: Maybe instead of throwing the exception, we should store it in the
 # 6 Patterns in functional programming
 *Map*: Applies a function to the inner values of a structure. 
 
+```csharp
+public static IEnumerable<R> Map<T, R>(this IEnumerable<T> ts, Func<T, R> f)
+	=> ts.Select(f);
+```
+[snippet source]()
+
+It is fine to use single letter names for variables in generic functions where we do not know anything about them.
+Map is the common term for Select in FP
+If we think about the option as a special list that can either be empty or contain one value,
+we can write a Map function for it as well.
+
+```csharp
+public static Option<R> Map<T, R>(this Option<T> optT, Func<T, R> f)
+	=> optT.Match(
+		() => None,
+		(t) => Some(f(t))
+	);
+```
+[snippet source]()
+
+**Remark:**
+A cartoon that I have seen somewhere before comes. Maybe DDD Europe? The illustration
+depicts a man delivering apples to his granny, who then makes a pie from them.
+When there is no apples, no pie is made. The man appears to be in shock.
+This illustrates the issue I have with None. Should we not have prevented
+the man from delivering an empty basket?
+
+Map abstracts away the question of whether a value is present or not.
+
+* *Functor*: A type for which a Map function is defined. E.G IEnumerable and Option
+
+* *Bind*: Is similar to map, but takes an option returning function. This avoids option from stacking. I.E. `Option<Option<T>>`.
+  * Bind is equivalent to SelectMany for IEnumerables.
+
+* *Monad*: A type for which a suitable Bind function is defined.
+  * It must also have a `Return` function that lifts or wraps a normal value T into a monadic value C<T>
+    * For Option, this is the Some function 
+    * IEnumerable has many, for example List("Hello");
+*Monads* are 
+
+## 6.6 Coding at different levels of abstraction
+*Elevated values*: Abstraction `A<T>` of corresponding regular value `T` that adds an effect on the underlying value
+* *Option*: adds optionality
+* *IEnumerable*: adds aggregation
+* *Func*: Adds lazyness
+* *Task*: Adds asynchrony
+
+Often, there are no obvious way to lower an elevated abstraction. You can go from `int` to `Option<int>`, but not the other
+way around.
+
+`Map` and `Bind` work on elevated values. Working on regular values often leads to null checks and for loops.
+
+# 7. Function composition
+Because C# lacks syntactic support for function composition, it is better to use method chaining.
+
+## 7.2 Thinking in terms of data flow
+Properties that make functions more composable than others
+* Pure
+* Chainable
+* General
+* Shape-preserving: If it takes an IEnumerable, it also returns an IEnumerable
+
+instead of 
+```csharp
+public void MakeTransfer([FromBody] MakeTransfer transfer)
+{
+    if (validator.IsValid(transfer))
+        Book(transfer
+}
+```
+write
+```csharp
+public void MakeTransfer([FromBody] MakeTransfer transfer)
+    => Some(transfer)
+        .Where(validator.IsValid)
+        .ForEach(Book);
+```
+adding a step, becomes easier
+```csharp
+public void MakeTransfer([FromBody] MakeTransfer transfer)
+    => Some(transfer)
+        .Map(Normalize)
+        .Where(validator.IsValid)
+        .ForEach(Book);
+```
+
+Imperative code relies on statements whereas functional code relies on expressions. Favouring expressions makes the code more declarative, and thus closer to spoken language.
+Expressions are anything that produces a value. I.E.
+* 123 or "something"
+* operators and operands
+* variables
+
+Statements are instructions to the program such as conditionals and loops. 
+
+# 8. Functional error handling
+Functional and imperative programming styles differ in error handling.
+* *Imperative*: Disrupts program flow with special statements like `throw` and `try-catch`
+* *Functional*: Returns a representation of its outcome, including an indication of success or failure.
+  * Error data is payload
+
+Confusion around when to use exceptions and when to use other error handling techniques.
+Option is too limited because lack details about why we are missing a value.
+
+*Either*: A type that can be either *Left* or *right*. Similar to *Option*
+Left is used for error handling.
+Map, Foreach, Bind can be implemented for Either.
+Computation is only done if the Either is a Right.
+Left side is reserved for error handling. 
+
+Implementing Where for Either introduces a problem
+
+```csharp
+public static Either<L, R> Where<L, R>
+(
+    this Either<L, R> either,
+    Func<R, bool> predicate
+)
+=> either.Match
+(
+    l => Left(l),
+    r => predicate(r)
+        : Right(r)
+        ? Left(/* Where the fuck is my l???*/)
+);
+```
+
+So Where is less general. You cannot implement it for an Either, but you can for an Option
+If you want Where, you can use Bind instead.
+
+## 8.4 Representing outcomes to client applications
+
+The api endpoint `GetInstrumentDetails` can translate None to 404 and Some to 200
+The api endpoint 'MakeTransfer' can translate Left to BadRequest, 400
+    This may lead to arguments about 400 being reserved for syntactically incorrect requests.
+    Returning a representation of the outcome in the response may be better.
+        I.E. Creating a ResultDTO and an extension method that converts Either.
+Objections for using either are:
+* Bind doesn't change the Left type, how do we compose functions that return Either with a different Left type?
+  * We can make a Map<L, LL, R, RR> dunction for that.
+* Specifying two type arguments makes it verbose
+* Either, Left and Right are cryptic names
+
+The latter points can be mitigated by introducing more specialized versions of either. E.G. Validation and Exceptional
+ * Validation: Denotes business rules validation
+ * Exception: Denotes possible unexpected technical errors
+
+Exceptions should for the most part be eliminated. They are still useful for developer errors and configuration options.
+
+# 9. Structuring an application with functions
+*Partial application*: Giving a function its input arguments piecemeal. 
+
+```csharp
+var greetWidth = (Greeting gr) => (Name name) => $"{gr}, {name}";
+```
+
+*curried form*: All arguments are supplied one by one via function invocation.
+
+*Apply*: adapter function that let you provide just one argument to a multi argument function
+
+Order of arguments should be, the more general parameters should come first. Parameters about the
+affected data should be left last. Parameters about how the function should operate should come first.
+
+## 9.2
+Type inference is not as good as we would like it to be.
+We should write funcs instead of methods when using higher order functions
+
+ * Write a blog post about this?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+  
+
+
+	
+
+
 
 
 

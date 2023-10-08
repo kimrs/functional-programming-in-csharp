@@ -14,6 +14,12 @@ internal static class Extensions
             Some<T>(var t) => Some(t),
             _ => throw new ArgumentException("Option must be None or Some")
         };
+    
+    public static Option<string> Lookup(this NameValueCollection collection, string key)
+        => collection[key]; // works because of implicit operator
+
+    public static Option<T> Lookup<K, T>(this IDictionary<K, T> dictionary, K key)
+        => dictionary.TryGetValue(key, out T value) ? Some(value) : None;
 }
 
 public struct NoneType { }
@@ -31,13 +37,9 @@ public abstract record Option<T>
 
 public record None<T> : Option<T> { }
 
-public record Some<T>
-    : Option<T>
+public record Some<T>(T Value) : Option<T>
 {
-    private T Value { get; }
-
-    public Some(T value)
-        => Value = value ?? throw new ArgumentNullException();
+    public T Value { get; } = Value ?? throw new ArgumentNullException();
 
     public void Deconstruct(out T value)
         => value = Value;
@@ -57,13 +59,19 @@ public static class Int
             : None;
 }
 
-public static class CollectionExtension
+public struct Age
 {
-    public static Option<string> Lookup(this NameValueCollection collection, string key)
-        => collection[key]; // works because of implicit operator
+    private int _value;
+    private Age(int value)
+        => _value = value;
 
-    public static Option<T> Lookup<K, T>(this IDictionary<K, T> dictionary, K key)
-        => dictionary.TryGetValue(key, out T value) ? Some(value) : None;
+    private static bool IsValid(int value)
+        => value is >= 0 and < 120;
+
+    public static Option<Age> Create(int value)
+        => IsValid(value)
+            ? Some(new Age(value))
+            : None;
 }
 
 public class Tests
