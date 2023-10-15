@@ -5,6 +5,10 @@ VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional Programming in CSharp", "Functional Programming in CSharp\Functional Programming in CSharp.csproj", "{24DD402A-AB66-482F-AD35-4DA4CDA70950}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaYumba.Functional", "functional-csharp-code-2\LaYumba.Functional\LaYumba.Functional.csproj", "{7AA3C54B-B9EB-46D8-B144-3463EB49C7F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples", "functional-csharp-code-2\Examples\Examples.csproj", "{BEFCDC2A-9875-41AB-92C9-C4FDF794ADB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{24DD402A-AB66-482F-AD35-4DA4CDA70950}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24DD402A-AB66-482F-AD35-4DA4CDA70950}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24DD402A-AB66-482F-AD35-4DA4CDA70950}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AA3C54B-B9EB-46D8-B144-3463EB49C7F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AA3C54B-B9EB-46D8-B144-3463EB49C7F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AA3C54B-B9EB-46D8-B144-3463EB49C7F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AA3C54B-B9EB-46D8-B144-3463EB49C7F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEFCDC2A-9875-41AB-92C9-C4FDF794ADB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEFCDC2A-9875-41AB-92C9-C4FDF794ADB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEFCDC2A-9875-41AB-92C9-C4FDF794ADB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEFCDC2A-9875-41AB-92C9-C4FDF794ADB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
